@@ -6,29 +6,29 @@ import os
 def getkey():
     fno = sys.stdin.fileno()
 
-    #stdinの端末属性を取得
+    # get stdin-property.
     attr_old = termios.tcgetattr(fno)
 
-    # stdinのエコー無効、カノニカルモード無効
+    # disnable stdin-echo, disnable canonical mode.
     attr = termios.tcgetattr(fno)
     attr[3] = attr[3] & ~termios.ECHO & ~termios.ICANON # & ~termios.ISIG
     termios.tcsetattr(fno, termios.TCSADRAIN, attr)
 
-    # stdinをNONBLOCKに設定
+    # set stdin to NONBLOCK.
     fcntl_old = fcntl.fcntl(fno, fcntl.F_GETFL)
     fcntl.fcntl(fno, fcntl.F_SETFL, fcntl_old | os.O_NONBLOCK)
 
     chr = 0
 
     try:
-        # キーを取得
+        # get key.
         c = sys.stdin.read(1)
         if len(c):
             while len(c):
                 chr = (chr << 8) + ord(c)
                 c = sys.stdin.read(1)
     finally:
-        # stdinを元に戻す
+        # reset stdin.
         fcntl.fcntl(fno, fcntl.F_SETFL, fcntl_old)
         termios.tcsetattr(fno, termios.TCSANOW, attr_old)
 
@@ -37,7 +37,7 @@ def getkey():
 if __name__ == "__main__":
     while 1:
         key = getkey()
-        # enterで終了、キー入力があれば表示
+        # end by enter-key, display if input key.
         if key == 10:
             break
         elif key:
