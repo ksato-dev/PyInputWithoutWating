@@ -38,14 +38,4 @@ def scankey():
 def getkey():
     with set_raw_mode():
         return scankey()
-
-if __name__ == "__main__":
-    with set_raw_mode():
-        while 1:
-            key = scankey()
-            # enterで終了、キー入力があれば表示
-            if key == '\n':
-                break
-            elif key:
-                print(repr(key))
-
+ 
